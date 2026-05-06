@@ -2,15 +2,25 @@
 
 Modern academic homepage template with a two-column landing page, JSON-driven content, selected publication cards, and an expanded publications page with optional demo preview support.
 
+The original `1.0.0` template introduction remains valid for users who prefer the lighter initial layout and simpler presentation. Version `1.1.0` keeps that foundation, while extending the template with stronger publication showcase and documentation support.
+
 ## Version Preview
 
 ### Version 1.1.0
 
-![AcaNova-X v1.1.0 Preview](docs/version_1.1.0.gif)
+<p align="center">
+  <img src="docs/version_1.1.0.gif" alt="AcaNova-X v1.1.0 Preview" width="760">
+</p>
+
+Latest version preview with selected publications, expanded publication cards, and updated documentation.
 
 ### Version 1.0.0
 
-![AcaNova-X v1.0.0 Preview](docs/version_1.0.0.gif)
+<p align="center">
+  <img src="docs/version_1.0.0.gif" alt="AcaNova-X v1.0.0 Preview" width="760">
+</p>
+
+Original template preview retained for reference, so users can compare the earlier default presentation with the newer release.
 
 ## Latest Version
 
@@ -34,6 +44,15 @@ Current release: `version 1.1.0`
 - Keeps PDF, Code, and Project Page buttons visible in the template, even when placeholder links are still `"#"`
 - Adjusts the default publication thumbnail box to a flatter horizontal preview ratio
 - Updates the README preview assets from the old single `example.gif` naming to versioned files
+
+## 1.0.0 Baseline
+
+The original `1.0.0` version still represents the base spirit of AcaNova-X:
+
+- A clean and lightweight academic homepage template
+- JSON-driven content editing for news, honors, and publications
+- Easy deployment for personal academic websites
+- A simpler publication presentation style for users who prefer a minimal starting point
 
 ## Version History
 
@@ -106,3 +125,4 @@ The template tries to load `demo.gif` first and falls back to the static thumbna
 - The template uses Tailwind CDN plus a small custom stylesheet in `styles.css`.
 - Relative asset paths in JSON are handled automatically for subpages under `pages/`.
 - README previews now use `docs/version_1.0.0.gif` and `docs/version_1.1.0.gif`.
+- The darker look in a GIF preview usually comes from the GIF export itself rather than GitHub Markdown rendering. The README now reduces the preview size to make the page easier to scan, but if needed, the source GIF can be re-exported later with a brighter palette.

@@ -1,594 +1,709 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Make all links open in a new tab
-    makeAllLinksOpenInNewTab();
+    const currentYear = document.getElementById('current-year');
+    if (currentYear) {
+        currentYear.textContent = new Date().getFullYear();
+    }
 
-    // Set up MutationObserver to watch for dynamically added links
+    setupMobileMenu();
+    setupSmoothScroll();
+    setupNavHighlight();
+    makeAllLinksOpenInNewTab();
     setupLinkObserver();
 
-    // Mobile Menu Toggle
+    loadNews();
+    loadHonors();
+    loadPublications();
+});
+
+function setupMobileMenu() {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
-    
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
 
-        // Close menu when a link is clicked
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
+    if (!mobileMenuBtn || !mobileMenu) {
+        return;
     }
-    
-    // Load publications data from JSON file
-    loadPublications();
-    
-    // Smooth scrolling for navigation links
-    const navLinks = document.querySelectorAll('.nav-links a');
-    
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Only apply smooth scrolling to hash links (internal page links)
-            if (this.getAttribute('href').startsWith('#')) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                const targetSection = document.querySelector(targetId);
-                
-                if (targetSection) {
-                    // Account for the sticky nav
-                    const navHeight = document.querySelector('.top-nav').offsetHeight;
-                    const targetPosition = targetSection.offsetTop - navHeight - 20;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Update active class
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                }
-            }
+
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
         });
     });
-    
-    // Update active nav link on scroll
-    window.addEventListener('scroll', function() {
+}
+
+function setupSmoothScroll() {
+    const navLinks = document.querySelectorAll('.nav-links a, .mobile-menu a');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(event) {
+            const href = this.getAttribute('href');
+            if (!href || !href.startsWith('#')) {
+                return;
+            }
+
+            const target = document.querySelector(href);
+            if (!target) {
+                return;
+            }
+
+            event.preventDefault();
+            const nav = document.querySelector('.top-nav');
+            const navHeight = nav ? nav.offsetHeight : 0;
+            const top = target.offsetTop - navHeight - 20;
+
+            window.scrollTo({
+                top,
+                behavior: 'smooth'
+            });
+        });
+    });
+}
+
+function setupNavHighlight() {
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const sections = document.querySelectorAll('section[id]');
+    const nav = document.querySelector('.top-nav');
+
+    if (!navLinks.length || !sections.length || !nav) {
+        return;
+    }
+
+    window.addEventListener('scroll', () => {
         let current = '';
-        const sections = document.querySelectorAll('section[id]');
-        const navHeight = document.querySelector('.top-nav').offsetHeight;
-        
+        const navHeight = nav.offsetHeight;
+
         sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            
-            if (pageYOffset >= sectionTop - navHeight - 100) {
+            if (window.pageYOffset >= section.offsetTop - navHeight - 100) {
                 current = section.getAttribute('id');
             }
         });
-        
+
         navLinks.forEach(link => {
             link.classList.remove('active');
-            const linkTarget = link.getAttribute('href').substring(1);
-            // Handle both homepage and about pointing to the same section
-            if (linkTarget === current || 
-                (current === 'homepage' && linkTarget === 'about') ||
-                (current === 'about' && linkTarget === 'homepage')) {
+            const target = (link.getAttribute('href') || '').replace('#', '');
+            if (target === current || (current === 'homepage' && target === 'about')) {
                 link.classList.add('active');
             }
         });
     });
+}
 
-    // Load news data
-    let newsJsonPath = 'data/news.json';
-    if (window.location.pathname.includes('/pages/')) {
-        newsJsonPath = '../data/news.json';
+function loadNews() {
+    const homeContainer = document.getElementById('news-container');
+    const allContainer = document.getElementById('all-news-container');
+
+    if (!homeContainer && !allContainer) {
+        return;
     }
-    
-    fetch(newsJsonPath)
-        .then(response => response.json())
-        .then(data => {
-            // Check if we're on the homepage
-            const latestNewsSection = document.getElementById('latest-news');
-            if (latestNewsSection) {
-                // On homepage - show limited news (first 8 items)
-                renderNewsItems(data.slice(0, 8), 'news-container');
+
+    fetch(getDataPath('news.json'))
+        .then(handleJsonResponse)
+        .then(items => {
+            if (homeContainer) {
+                renderNewsItems(items.slice(0, 8), homeContainer);
             }
-            
-            // Check if we're on the all-news page
-            const allNewsSection = document.getElementById('all-news');
-            if (allNewsSection) {
-                // On all-news page - show all news items
-                renderNewsItems(data, 'all-news-container');
+            if (allContainer) {
+                renderNewsItems(items, allContainer);
             }
         })
         .catch(error => {
             console.error('Error loading news data:', error);
         });
-    
-    // Load honors data
-    let honorsJsonPath = 'data/honors.json';
-    if (window.location.pathname.includes('/pages/')) {
-        honorsJsonPath = '../data/honors.json';
+}
+
+function loadHonors() {
+    const homeContainer = document.getElementById('honors-container');
+    const allContainer = document.getElementById('all-honors-container');
+
+    if (!homeContainer && !allContainer) {
+        return;
     }
-    
-    fetch(honorsJsonPath)
-        .then(response => response.json())
-        .then(data => {
-            // Check if we're on the homepage
-            const honorsSection = document.getElementById('honors');
-            if (honorsSection) {
-                // On homepage - show limited honors (first 8 items)
-                renderHonorsItems(data.slice(0, 8), 'honors-container');
+
+    fetch(getDataPath('honors.json'))
+        .then(handleJsonResponse)
+        .then(items => {
+            if (homeContainer) {
+                renderHonorsItems(items.slice(0, 8), homeContainer);
             }
-            
-            // Check if we're on the all-honors page
-            const allHonorsSection = document.getElementById('all-honors');
-            if (allHonorsSection) {
-                // On all-honors page - show all honors items
-                renderHonorsItems(data, 'all-honors-container');
+            if (allContainer) {
+                renderHonorsItems(items, allContainer);
             }
         })
         .catch(error => {
             console.error('Error loading honors data:', error);
         });
-});
+}
 
-// Function to load publications from JSON
 function loadPublications() {
-    let publicationsJsonPath = 'data/publications.json';
-    if (window.location.pathname.includes('/pages/')) {
-        publicationsJsonPath = '../data/publications.json';
-    }
+    const featuredContainer = document.getElementById('featured-publications-container');
+    const allContainer = document.getElementById('all-publications-container');
 
-    const publicationsList = document.querySelector('.publications-list');
-    if (!publicationsList) {
-        console.warn('Publications list not found');
+    if (!featuredContainer && !allContainer) {
         return;
     }
-    
-    // Clear existing publications
-    publicationsList.innerHTML = '';
-    
-    fetch(publicationsJsonPath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+
+    fetch(getDataPath('publications.json'))
+        .then(handleJsonResponse)
         .then(publications => {
-            console.log('Loaded publications:', publications.length);
-            
-            // Filter publications to show on homepage based on showOnHomepage flag
-            let pubsToShow = publications;
-            
-            // Sort by year descending (Preprints/Missing year at top)
-            pubsToShow.sort((a, b) => {
-                const yearA = a.year ? parseInt(a.year) : 9999;
-                const yearB = b.year ? parseInt(b.year) : 9999;
-                return yearB - yearA;
-            });
+            if (featuredContainer) {
+                const featured = publications
+                    .filter(pub => pub.showOnHomepage)
+                    .sort(compareFeaturedPublications);
+                renderFeaturedPublications(featuredContainer, featured);
+            }
 
-            // Group by year
-            const pubsByYear = {};
-            pubsToShow.forEach(pub => {
-                const year = pub.year || 'Preprint';
-                if (!pubsByYear[year]) {
-                    pubsByYear[year] = [];
-                }
-                pubsByYear[year].push(pub);
-            });
-
-            // Get sorted years
-            const sortedYears = Object.keys(pubsByYear).sort((a, b) => {
-                if (a === 'Preprint') return -1;
-                if (b === 'Preprint') return 1;
-                return b - a;
-            });
-
-            // Render groups
-            sortedYears.forEach(year => {
-                const yearGroup = document.createElement('div');
-                yearGroup.className = 'pub-year-group';
-
-                // Year Header
-                const yearHeader = document.createElement('h3');
-                yearHeader.className = 'pub-year-header';
-                yearHeader.textContent = `-${year}-`;
-                yearGroup.appendChild(yearHeader);
-
-                // List
-                const ul = document.createElement('ul');
-                ul.className = 'pub-list-ul';
-
-                pubsByYear[year].forEach(pub => {
-                    const li = document.createElement('li');
-                    li.className = 'pub-list-item';
-
-                    // Wrapper for text content to allow side-by-side layout with thumbnail
-                    const contentWrapper = document.createElement('div');
-                    contentWrapper.className = 'pub-content-wrapper';
-
-                    // --- Line 1: [Venue] Title ---
-                    const line1 = document.createElement('div');
-                    line1.className = 'pub-line-1';
-
-                    // Venue Tag
-                    const venueTagSpan = document.createElement('span');
-                    const venueShort = getVenueShortName(pub.venue, pub.year);
-                    venueTagSpan.textContent = `[${venueShort}]`;
-                    venueTagSpan.className = 'pub-venue-tag';
-                    if (venueShort.toLowerCase().includes('arxiv') || venueShort.toLowerCase().includes('preprint')) {
-                        venueTagSpan.classList.add('tag-arxiv');
-                    } else {
-                        venueTagSpan.classList.add('tag-conference');
-                    }
-                    line1.appendChild(venueTagSpan);
-
-                    // Title (Text only, no link on title itself)
-                    const titleSpan = document.createElement('span');
-                    titleSpan.className = 'pub-title-text';
-                    titleSpan.textContent = pub.title;
-                    line1.appendChild(titleSpan);
-                    
-                    // Paper/Code Buttons
-                    if (pub.tags) {
-                        pub.tags.forEach(tag => {
-                            if (tag.link && tag.link !== '#') {
-                                const btn = document.createElement('a');
-                                btn.className = 'pub-link-btn';
-                                btn.href = tag.link;
-                                btn.target = '_blank';
-                                
-                                // Customize text/icon based on tag type
-                                if (tag.text === 'Paper') {
-                                    btn.textContent = 'PDF';
-                                } else {
-                                    btn.textContent = tag.text;
-                                }
-                                
-                                line1.appendChild(btn);
-                            }
-                        });
-                    }
-
-                    // Thumbnail Preview Button (if thumbnail exists)
-                    let thumbBox = null;
-                    if (pub.thumbnail) {
-                        const btnPreview = document.createElement('button');
-                        btnPreview.className = 'pub-link-btn pub-btn-preview';
-                        btnPreview.textContent = 'Image';
-                        btnPreview.onclick = function() {
-                            if (li.classList.contains('with-thumbnail-expanded')) {
-                                li.classList.remove('with-thumbnail-expanded');
-                                thumbBox.style.display = 'none';
-                                btnPreview.classList.remove('active');
-                            } else {
-                                li.classList.add('with-thumbnail-expanded');
-                                thumbBox.style.display = 'block';
-                                btnPreview.classList.add('active');
-                            }
-                        };
-                        line1.appendChild(btnPreview);
-
-                        // Create thumbnail container
-                        thumbBox = document.createElement('div');
-                        thumbBox.className = 'pub-thumbnail-box';
-                        thumbBox.style.display = 'none';
-                        const thumbImg = document.createElement('img');
-                        thumbImg.src = pub.thumbnail;
-                        thumbImg.alt = 'Publication Thumbnail';
-                        thumbBox.appendChild(thumbImg);
-                    }
-                    
-                    contentWrapper.appendChild(line1);
-
-                    // --- Line 2: Authors ---
-                    const line2 = document.createElement('div');
-                    line2.className = 'pub-line-2';
-                    line2.innerHTML = pub.authors; // keep innerHTML for <strong>/<u>
-                    contentWrapper.appendChild(line2);
-
-                    // --- Line 3: Venue Details ---
-                    const line3 = document.createElement('div');
-                    line3.className = 'pub-line-3';
-                    
-                    // 1. Badge (Oral/Spotlight) - Red Box at start
-                    let highlightText = pub.highlight || '';
-                    let badgeText = '';
-                    if (highlightText.toLowerCase().includes('oral')) badgeText = 'Oral';
-                    else if (highlightText.toLowerCase().includes('spotlight')) badgeText = 'Spotlight';
-                    
-                    if (badgeText) {
-                        const badge = document.createElement('span');
-                        badge.className = 'pub-badge-highlight';
-                        badge.textContent = badgeText;
-                        line3.appendChild(badge);
-                    }
-
-                    // 2. Full Venue Name (No Year for Journals)
-                    const fullVenueName = getVenueFullName(pub.venue, pub.year);
-                    const venueNameSpan = document.createElement('span');
-                    venueNameSpan.textContent = fullVenueName;
-                    line3.appendChild(venueNameSpan);
-
-                    // 3. CCF Rank
-                    const ccfRank = getCCFRank(fullVenueName, pub.venue);
-                    if (ccfRank) {
-                        const rankSpan = document.createElement('span');
-                        rankSpan.className = `ccf-rank ccf-${ccfRank.toLowerCase()}`;
-                        rankSpan.textContent = `(CCF-${ccfRank})`;
-                        line3.appendChild(rankSpan);
-                    }
-
-                    contentWrapper.appendChild(line3);
-                    
-                    // Append wrapper and thumbnail box to LI
-                    li.appendChild(contentWrapper);
-                    if (thumbBox) {
-                        li.appendChild(thumbBox);
-                    }
-
-                    ul.appendChild(li);
-                });
-
-                yearGroup.appendChild(ul);
-                publicationsList.appendChild(yearGroup);
-            });
+            if (allContainer) {
+                renderAllPublicationsPage(allContainer, publications);
+            }
         })
         .catch(error => {
             console.error('Error loading publications data:', error);
-            publicationsList.innerHTML = '<p>Failed to load publications. Please check the console for details.</p>';
+            const container = featuredContainer || allContainer;
+            if (container) {
+                container.innerHTML = '<p>Failed to load publications.</p>';
+            }
         });
 }
 
-function getVenueShortName(venueStr, year) {
-    if (!venueStr) return 'Preprint';
-    
-    // Remove year (4 digits at end or start)
-    let s = venueStr.replace(/\d{4}/g, '').trim();
-    let suffix = '';
-    
-    // Check if it is a conference that needs year suffix
-    const conferences = ['NeurIPS', 'CVPR', 'ICCV', 'ECCV', 'ICRA', 'AAAI', 'GLOBECOM', 'INFOCOM', 'MOBICOM'];
-    for (const conf of conferences) {
-        if (s.includes(conf)) {
-            // Get last two digits of year
-            if (year) {
-                const yearStr = year.toString();
-                if (yearStr.length === 4) {
-                    suffix = "'" + yearStr.substring(2);
-                }
-            }
-            return conf + suffix;
-        }
-    }
+function renderFeaturedPublications(container, publications) {
+    container.innerHTML = '';
 
-    // Special cases
-    if (s.toLowerCase().includes('arxiv')) return 'ArXiv'; // No year
-    
-    // Journals or specific conferences
-    if (s.includes('TDSC')) return 'IEEE TDSC';
-    if (s.includes('TMC')) return 'IEEE TMC';
-    if (s.includes('JSAC')) return 'IEEE JSAC';
-    if (s.includes('TGCN')) return 'IEEE TGCN';
-    if (s.includes('LNET')) return 'IEEE LNET';
-    if (s.includes('TNSE')) return 'IEEE TNSE';
-    if (s.includes('IOTJ') || s.includes('IoTJ')) return 'IEEE IoTJ';
-
-    return s;
-}
-
-function getVenueFullName(venueStr, year) {
-    if (!venueStr) return '';
-    let s = venueStr.replace(/\d{4}/g, '').trim(); // Remove year
-    
-    // Get year suffix for conferences
-    let yearSuffix = '';
-    if (year) {
-        const yearStr = year.toString();
-        if (yearStr.length === 4) {
-            yearSuffix = "'" + yearStr.substring(2);
-        }
-    }
-
-    // Journal Full Names Mapping (No Year)
-    if (s.includes('TDSC')) return 'IEEE Transactions on Dependable and Secure Computing';
-    if (s.includes('TMC')) return 'IEEE Transactions on Mobile Computing';
-    if (s.includes('JSAC')) return 'IEEE Journal on Selected Areas in Communications';
-    if (s.includes('TGCN')) return 'IEEE Transactions on Green Communications and Networking';
-    if (s.includes('TNSE')) return 'IEEE Transactions on Network Science and Engineering';
-    if (s.includes('IoTJ') || s.includes('IoTJ')) return 'IEEE Internet of Things Journal';
-    if (s.includes('LNET') || s.includes('LNet')) return 'IEEE Networking Letters';
-    
-    // Conference Full Names Mapping (With Year Suffix)
-    if (s.includes('NeurIPS')) return `Annual Conference on Neural Information Processing Systems (NeurIPS${yearSuffix})`;
-    if (s.includes('CVPR')) return `IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR${yearSuffix})`;
-    if (s.includes('ICCV')) return `IEEE/CVF International Conference on Computer Vision (ICCV${yearSuffix})`;
-    if (s.includes('ECCV')) return `European Conference on Computer Vision (ECCV${yearSuffix})`;
-    if (s.includes('ICRA')) return `IEEE International Conference on Robotics and Automation (ICRA${yearSuffix})`;
-    if (s.includes('AAAI')) return `AAAI Conference on Artificial Intelligence (AAAI${yearSuffix})`;
-    if (s.includes('GLOBECOM')) return `IEEE Global Communications Conference (GLOBECOM${yearSuffix})`;
-    if (s.includes('INFOCOM')) return `IEEE International Conference on Computer Communications (INFOCOM${yearSuffix})`;
-    if (s.includes('MOBICOM')) return `Annual International Conference on Mobile Computing and Networking (MobiCom${yearSuffix})`;
-    
-    if (s.toLowerCase().includes('arxiv')) return 'arXiv preprint';
-    
-    return s;
-}
-
-function getCCFRank(fullName, originalVenue) {
-    const v = (fullName + ' ' + originalVenue).toLowerCase();
-    
-    // CCF-A
-    if (v.includes('tdsc') || v.includes('dependable and secure') || 
-        v.includes('tmc') || v.includes('mobile computing') || 
-        v.includes('aaai') || v.includes('neurips') || 
-        v.includes('cvpr') || v.includes('iccv') || 
-        v.includes('infocom') || v.includes('jsac')) {
-        return 'A';
-    }
-    
-    // CCF-B
-    if (v.includes('icra')) {
-        return 'B';
-    }
-    
-    // CCF-C
-    if (v.includes('globecom')) {
-        return 'C';
-    }
-    
-    return null;
-}
-
-// Function to render news items
-function renderNewsItems(newsData, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) {
-        console.warn('News container not found:', containerId);
+    if (!publications.length) {
+        container.innerHTML = '<p>No featured publications available.</p>';
         return;
     }
-    
-    // Clear any existing content
+
+    const list = document.createElement('ul');
+    list.className = 'pub-list-ul';
+
+    publications.forEach(pub => {
+        list.appendChild(createPublicationItem(pub));
+    });
+
+    container.appendChild(list);
+}
+
+function renderAllPublicationsPage(container, publications) {
+    const filter = getPublicationFilter();
+    const filterIndicator = document.getElementById('filter-indicator');
+
+    let filtered = publications.slice();
+
+    if (filter === 'first-author') {
+        filtered = filtered.filter(pub => pub.isFirstAuthor === true);
+        if (filterIndicator) {
+            filterIndicator.textContent = '(First Author)';
+        }
+    } else if (filter === 'accepted') {
+        filtered = filtered.filter(pub => String(pub.type || '').toLowerCase() === 'accepted');
+        if (filterIndicator) {
+            filterIndicator.textContent = '(Accepted)';
+        }
+    } else if (filterIndicator) {
+        filterIndicator.textContent = '';
+    }
+
+    updateFilterButtons(filter);
+    renderAllPublications(container, filtered);
+}
+
+function renderAllPublications(container, publications) {
     container.innerHTML = '';
-    
-    // Add each news item to the container
+
+    if (!publications.length) {
+        container.innerHTML = '<p class="empty-state">No publications found for this filter.</p>';
+        return;
+    }
+
+    const grouped = new Map();
+
+    publications
+        .slice()
+        .sort(compareAllPublications)
+        .forEach(pub => {
+            const yearLabel = getYearLabel(pub);
+            if (!grouped.has(yearLabel)) {
+                grouped.set(yearLabel, []);
+            }
+            grouped.get(yearLabel).push(pub);
+        });
+
+    Array.from(grouped.entries()).forEach(([year, items]) => {
+        const group = document.createElement('div');
+        group.className = 'pub-year-group';
+
+        const header = document.createElement('h3');
+        header.className = 'pub-year-header';
+        header.textContent = year;
+        group.appendChild(header);
+
+        const list = document.createElement('ul');
+        list.className = 'pub-list-ul';
+        items.forEach(pub => {
+            list.appendChild(createPublicationItem(pub));
+        });
+
+        group.appendChild(list);
+        container.appendChild(group);
+    });
+}
+
+function createPublicationItem(pub) {
+    const item = document.createElement('li');
+    item.className = 'pub-list-item with-thumbnail-expanded';
+
+    const content = document.createElement('div');
+    content.className = 'pub-content-wrapper';
+
+    const line1 = document.createElement('div');
+    line1.className = 'pub-line-1';
+
+    const title = document.createElement('span');
+    title.className = 'pub-title-text';
+    title.textContent = pub.displayTitle || pub.title || 'Untitled Publication';
+    line1.appendChild(title);
+    content.appendChild(line1);
+
+    const line2 = document.createElement('div');
+    line2.className = 'pub-line-2';
+    line2.innerHTML = pub.authors || '';
+    content.appendChild(line2);
+
+    const line3 = document.createElement('div');
+    line3.className = 'pub-line-3';
+
+    const venueFullName = getVenueFullName(pub.venue, pub.year);
+    const venueShortName = getVenueShortName(pub.venue, pub.year);
+    const venueText = venueFullName || pub.venue || 'Preprint';
+
+    const venueNameSpan = document.createElement('span');
+    venueNameSpan.textContent = venueText;
+    line3.appendChild(venueNameSpan);
+
+    if (shouldShowVenueTag(pub.venue, venueFullName, venueShortName)) {
+        const venueTag = document.createElement('span');
+        venueTag.className = 'pub-venue-tag pub-venue-inline-tag';
+        venueTag.textContent = venueShortName;
+
+        const lowerVenue = venueShortName.toLowerCase();
+        if (lowerVenue.includes('under review') || lowerVenue.includes('preprint') || lowerVenue.includes('arxiv')) {
+            venueTag.classList.add('tag-under-review');
+        } else {
+            venueTag.classList.add('tag-conference');
+        }
+
+        line3.appendChild(venueTag);
+    }
+
+    const badgeText = getHighlightBadge(pub.highlight);
+    if (badgeText) {
+        const badge = document.createElement('span');
+        badge.className = 'pub-badge-highlight';
+        badge.textContent = badgeText;
+        line3.appendChild(badge);
+    }
+
+    content.appendChild(line3);
+
+    if (pub.tags && Array.isArray(pub.tags)) {
+        const line4 = document.createElement('div');
+        line4.className = 'pub-line-4';
+
+        pub.tags.forEach(tag => {
+            const label = tag.text === 'Paper' ? 'PDF' : (tag.text || 'Link');
+            const usableLink = hasUsableLink(tag.link);
+
+            const button = document.createElement(usableLink ? 'a' : 'span');
+            button.className = 'pub-link-btn';
+            button.textContent = label;
+
+            if (usableLink) {
+                button.href = normalizeAssetPath(tag.link);
+                button.target = '_blank';
+                button.rel = 'noopener noreferrer';
+            } else {
+                button.classList.add('is-placeholder');
+                button.title = 'Replace "#" with a real link in data/publications.json';
+            }
+
+            line4.appendChild(button);
+        });
+
+        if (line4.children.length > 0) {
+            content.appendChild(line4);
+        }
+    }
+
+    item.appendChild(content);
+
+    if (pub.thumbnail) {
+        const thumbBox = document.createElement('div');
+        thumbBox.className = 'pub-thumbnail-box';
+
+        const thumbImg = document.createElement('img');
+        const preferredThumbnail = getPreferredThumbnail(pub.thumbnail);
+        thumbImg.src = preferredThumbnail.primary;
+        thumbImg.alt = `${pub.title || 'Publication'} preview`;
+        thumbImg.loading = 'lazy';
+        thumbImg.onerror = function() {
+            if (this.src !== preferredThumbnail.fallback) {
+                this.onerror = null;
+                this.src = preferredThumbnail.fallback;
+            }
+        };
+
+        thumbBox.appendChild(thumbImg);
+        item.appendChild(thumbBox);
+    }
+
+    return item;
+}
+
+function renderNewsItems(newsData, container) {
+    container.innerHTML = '';
+
     newsData.forEach(newsItem => {
         const newsElement = document.createElement('div');
         newsElement.className = 'news-item';
-        
-        // Create the date element
+
         const dateElement = document.createElement('span');
         dateElement.className = 'news-date';
-        dateElement.textContent = newsItem.date;
-        
-        // Create the content element
+        dateElement.textContent = newsItem.date || '';
+
         const contentElement = document.createElement('div');
         contentElement.className = 'news-content';
-        
-        // Create emoji and content text
+
         const textSpan = document.createElement('span');
-        textSpan.innerHTML = '🎉 ' + newsItem.content;
+        textSpan.innerHTML = '🎉 ' + (newsItem.content || '');
         contentElement.appendChild(textSpan);
-        
-        // Add links if provided in the links array format
-        if (newsItem.links && newsItem.links.length > 0) {
+
+        if (Array.isArray(newsItem.links)) {
             newsItem.links.forEach(link => {
                 const space = document.createTextNode(' ');
                 contentElement.appendChild(space);
-                
-                const linkElement = document.createElement('a');
-                linkElement.href = link.url;
-                linkElement.textContent = link.text;
-                if (link.url && !link.url.startsWith('#')) {
-                    linkElement.setAttribute('target', '_blank');
+
+                const anchor = document.createElement('a');
+                anchor.href = normalizeAssetPath(link.url || '#');
+                anchor.textContent = link.text || 'Link';
+                if (shouldOpenInNewTab(anchor.getAttribute('href'))) {
+                    anchor.target = '_blank';
+                    anchor.rel = 'noopener noreferrer';
                 }
-                contentElement.appendChild(linkElement);
+                contentElement.appendChild(anchor);
             });
         }
-        
-        // Check for old style link (backward compatibility)
-        if (newsItem.link && newsItem.link !== '#' && (!newsItem.links || newsItem.links.length === 0)) {
-            const space = document.createTextNode(' ');
-            contentElement.appendChild(space);
-            
-            const linkElement = document.createElement('a');
-            linkElement.href = newsItem.link;
-            linkElement.textContent = '[Link]';
-            linkElement.setAttribute('target', '_blank');
-            contentElement.appendChild(linkElement);
-        }
-        
+
         newsElement.appendChild(dateElement);
         newsElement.appendChild(contentElement);
         container.appendChild(newsElement);
     });
 }
 
-// Function to render honors items
-function renderHonorsItems(honorsData, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) {
-        console.warn('Honors container not found:', containerId);
-        return;
-    }
-    
-    // Clear any existing content
+function renderHonorsItems(honorsData, container) {
     container.innerHTML = '';
-    
-    // Add each honor item to the container
-    honorsData.forEach(honor => {
+
+    honorsData.forEach(honorItem => {
         const honorElement = document.createElement('div');
         honorElement.className = 'honor-item';
-        
-        // Year
+
         const yearElement = document.createElement('div');
         yearElement.className = 'honor-year';
-        yearElement.textContent = honor.date;
-        
-        // Content
+        yearElement.textContent = honorItem.date || '';
+
         const contentElement = document.createElement('div');
         contentElement.className = 'honor-content';
-        
+
         const titleElement = document.createElement('h3');
-        titleElement.textContent = honor.title;
-        
-        const orgElement = document.createElement('p');
-        orgElement.className = 'text-sm text-neutral-600';
-        orgElement.textContent = honor.org;
-        
+        titleElement.textContent = honorItem.title || '';
         contentElement.appendChild(titleElement);
-        contentElement.appendChild(orgElement);
-        
+
+        const descElement = document.createElement('p');
+        if (honorItem.description) {
+            descElement.innerHTML = honorItem.description;
+        } else {
+            descElement.textContent = honorItem.org || '';
+        }
+        contentElement.appendChild(descElement);
+
         honorElement.appendChild(yearElement);
         honorElement.appendChild(contentElement);
-        
         container.appendChild(honorElement);
     });
 }
 
-// Helper to open all external links in new tab
+function compareFeaturedPublications(a, b) {
+    const orderA = a.featuredOrder ?? Number.MAX_SAFE_INTEGER;
+    const orderB = b.featuredOrder ?? Number.MAX_SAFE_INTEGER;
+    if (orderA !== orderB) {
+        return orderA - orderB;
+    }
+    return compareAllPublications(a, b);
+}
+
+function compareAllPublications(a, b) {
+    const yearA = getComparableYear(a);
+    const yearB = getComparableYear(b);
+    if (yearA !== yearB) {
+        return yearB - yearA;
+    }
+
+    const acceptedA = String(a.type || '').toLowerCase() === 'accepted' ? 1 : 0;
+    const acceptedB = String(b.type || '').toLowerCase() === 'accepted' ? 1 : 0;
+    if (acceptedA !== acceptedB) {
+        return acceptedB - acceptedA;
+    }
+
+    const orderA = a.featuredOrder ?? Number.MAX_SAFE_INTEGER;
+    const orderB = b.featuredOrder ?? Number.MAX_SAFE_INTEGER;
+    if (orderA !== orderB) {
+        return orderA - orderB;
+    }
+
+    return String(a.title || '').localeCompare(String(b.title || ''));
+}
+
+function getComparableYear(pub) {
+    const parsedYear = parseInt(pub.year, 10);
+    if (!Number.isNaN(parsedYear)) {
+        return parsedYear;
+    }
+    return String(pub.type || '').toLowerCase() === 'accepted' ? 0 : 9999;
+}
+
+function getYearLabel(pub) {
+    const parsedYear = parseInt(pub.year, 10);
+    if (!Number.isNaN(parsedYear)) {
+        return String(parsedYear);
+    }
+    return 'Preprints / Under Review';
+}
+
+function getPublicationFilter() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('filter') || 'all';
+}
+
+function updateFilterButtons(filter) {
+    document.querySelectorAll('.filter-link').forEach(link => {
+        link.classList.remove('active');
+    });
+
+    if (filter === 'first-author') {
+        const element = document.getElementById('filter-first');
+        if (element) {
+            element.classList.add('active');
+        }
+    } else if (filter === 'accepted') {
+        const element = document.getElementById('filter-accepted');
+        if (element) {
+            element.classList.add('active');
+        }
+    } else {
+        const element = document.getElementById('filter-all');
+        if (element) {
+            element.classList.add('active');
+        }
+    }
+}
+
+function getHighlightBadge(highlightText) {
+    const text = String(highlightText || '').toLowerCase();
+    if (text.includes('oral')) {
+        return 'Oral';
+    }
+    if (text.includes('spotlight')) {
+        return 'Spotlight';
+    }
+    return '';
+}
+
+function getPreferredThumbnail(thumbnailPath) {
+    const lastSlash = thumbnailPath.lastIndexOf('/');
+    if (lastSlash === -1) {
+        const normalized = normalizeAssetPath(thumbnailPath);
+        return { primary: normalized, fallback: normalized };
+    }
+
+    const directory = thumbnailPath.substring(0, lastSlash);
+    return {
+        primary: normalizeAssetPath(`${directory}/demo.gif`),
+        fallback: normalizeAssetPath(thumbnailPath)
+    };
+}
+
+function getVenueShortName(venueStr, year) {
+    if (!venueStr) {
+        return 'Preprint';
+    }
+
+    let revisionSuffix = '';
+    if (venueStr.toLowerCase().includes('major revision')) {
+        revisionSuffix = ', Major';
+    } else if (venueStr.toLowerCase().includes('minor revision')) {
+        revisionSuffix = ', Minor';
+    }
+
+    let s = venueStr.replace(/\d{4}/g, '').trim();
+    let suffix = '';
+
+    const conferences = ['NeurIPS', 'CVPR', 'ICCV', 'ECCV', 'ICRA', 'AAAI', 'GLOBECOM', 'INFOCOM', 'MOBICOM'];
+    for (const conf of conferences) {
+        if (s.includes(conf)) {
+            if (year) {
+                const yearStr = String(year);
+                if (yearStr.length === 4) {
+                    suffix = "'" + yearStr.substring(2);
+                }
+            }
+            return conf + suffix + revisionSuffix;
+        }
+    }
+
+    if (s.toLowerCase().includes('arxiv')) {
+        return 'ArXiv' + revisionSuffix;
+    }
+
+    if (s.includes('TDSC')) return 'IEEE TDSC' + revisionSuffix;
+    if (s.includes('TMC')) return 'IEEE TMC' + revisionSuffix;
+    if (s.includes('JSAC')) return 'IEEE JSAC' + revisionSuffix;
+    if (s.includes('TGCN')) return 'IEEE TGCN' + revisionSuffix;
+    if (s.includes('LNET')) return 'IEEE LNET' + revisionSuffix;
+    if (s.includes('TNSE')) return 'IEEE TNSE' + revisionSuffix;
+    if (s.includes('IOTJ') || s.includes('IoTJ')) return 'IEEE IoTJ' + revisionSuffix;
+
+    return s || 'Preprint';
+}
+
+function getVenueFullName(venueStr) {
+    if (!venueStr) {
+        return '';
+    }
+
+    const s = venueStr.replace(/\d{4}/g, '').trim();
+
+    if (s.includes('TDSC')) return 'IEEE Transactions on Dependable and Secure Computing';
+    if (s.includes('TMC')) return 'IEEE Transactions on Mobile Computing';
+    if (s.includes('JSAC')) return 'IEEE Journal on Selected Areas in Communications';
+    if (s.includes('TGCN')) return 'IEEE Transactions on Green Communications and Networking';
+    if (s.includes('TNSE')) return 'IEEE Transactions on Network Science and Engineering';
+    if (s.includes('IoTJ') || s.includes('IOTJ')) return 'IEEE Internet of Things Journal';
+    if (s.includes('LNET') || s.includes('LNet')) return 'IEEE Networking Letters';
+
+    if (s.includes('NeurIPS')) return 'Annual Conference on Neural Information Processing Systems';
+    if (s.includes('CVPR')) return 'IEEE/CVF Conference on Computer Vision and Pattern Recognition';
+    if (s.includes('ICCV')) return 'IEEE/CVF International Conference on Computer Vision';
+    if (s.includes('ECCV')) return 'European Conference on Computer Vision';
+    if (s.includes('ICRA')) return 'IEEE International Conference on Robotics and Automation';
+    if (s.includes('AAAI')) return 'AAAI Conference on Artificial Intelligence';
+    if (s.includes('GLOBECOM')) return 'IEEE Global Communications Conference';
+    if (s.includes('INFOCOM')) return 'IEEE International Conference on Computer Communications';
+    if (s.includes('MOBICOM')) return 'Annual International Conference on Mobile Computing and Networking';
+
+    if (s.toLowerCase().includes('arxiv')) return 'arXiv preprint';
+
+    return s;
+}
+
+function shouldShowVenueTag(venueStr, fullVenueName, venueShort) {
+    if (!venueShort) {
+        return false;
+    }
+
+    const shortLower = venueShort.toLowerCase().trim();
+    const fullLower = String(fullVenueName || '').toLowerCase().trim();
+
+    if (!fullLower || shortLower === fullLower) {
+        return false;
+    }
+
+    if (venueStr && venueStr.toLowerCase().includes('under review')) {
+        return false;
+    }
+
+    return true;
+}
+
+function getDataPath(fileName) {
+    return window.location.pathname.includes('/pages/') ? `../data/${fileName}` : `data/${fileName}`;
+}
+
+function normalizeAssetPath(path) {
+    if (!path) {
+        return path;
+    }
+
+    if (/^(https?:|mailto:|tel:|#)/i.test(path)) {
+        return path;
+    }
+
+    if (window.location.pathname.includes('/pages/') && !path.startsWith('../')) {
+        return `../${path}`;
+    }
+
+    return path;
+}
+
+function hasUsableLink(path) {
+    return Boolean(path) && path !== '#';
+}
+
+function handleJsonResponse(response) {
+    if (!response.ok) {
+        throw new Error(`Request failed: ${response.status}`);
+    }
+    return response.json();
+}
+
 function makeAllLinksOpenInNewTab() {
-    const links = document.querySelectorAll('a');
-    links.forEach(link => {
-        if (link.hostname !== window.location.hostname && link.getAttribute('href') && !link.getAttribute('href').startsWith('#') && !link.getAttribute('href').startsWith('mailto:')) {
-            link.setAttribute('target', '_blank');
-            link.setAttribute('rel', 'noopener noreferrer');
+    document.querySelectorAll('a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (shouldOpenInNewTab(href)) {
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
         }
     });
 }
 
-// Helper to setup MutationObserver for dynamically added links
+function shouldOpenInNewTab(href) {
+    if (!href) {
+        return false;
+    }
+    if (href.startsWith('#')) {
+        return false;
+    }
+    if (href.startsWith('../') || href.startsWith('./')) {
+        return false;
+    }
+    if (/^[a-zA-Z]:\\/.test(href)) {
+        return false;
+    }
+    if (href.endsWith('.html')) {
+        return false;
+    }
+    return true;
+}
+
 function setupLinkObserver() {
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'childList') {
-                mutation.addedNodes.forEach(function(node) {
-                    if (node.nodeType === 1) { // Element node
-                        if (node.tagName === 'A') {
-                            if (node.hostname !== window.location.hostname && node.getAttribute('href') && !node.getAttribute('href').startsWith('#') && !node.getAttribute('href').startsWith('mailto:')) {
-                                node.setAttribute('target', '_blank');
-                                node.setAttribute('rel', 'noopener noreferrer');
-                            }
-                        }
-                        // Check descendants
-                        const links = node.querySelectorAll('a');
-                        links.forEach(link => {
-                            if (link.hostname !== window.location.hostname && link.getAttribute('href') && !link.getAttribute('href').startsWith('#') && !link.getAttribute('href').startsWith('mailto:')) {
-                                link.setAttribute('target', '_blank');
-                                link.setAttribute('rel', 'noopener noreferrer');
-                            }
-                        });
-                    }
-                });
+    if (!document.body) {
+        return;
+    }
+
+    const observer = new MutationObserver(mutations => {
+        let shouldRefreshLinks = false;
+
+        for (const mutation of mutations) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                shouldRefreshLinks = true;
+                break;
             }
-        });
+        }
+
+        if (shouldRefreshLinks) {
+            makeAllLinksOpenInNewTab();
+        }
     });
 
     observer.observe(document.body, {

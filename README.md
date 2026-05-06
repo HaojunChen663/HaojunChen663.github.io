@@ -1,24 +1,41 @@
-# AcaNova-X
+# AcaNova-X: The Next-Gen Academic Homepage Template
+
+<div align="center">
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
+
+</div>
 
 Modern academic homepage template with a two-column landing page, JSON-driven content, selected publication cards, and an expanded publications page with optional demo preview support.
 
-The original `1.0.0` template introduction remains valid for users who prefer the lighter initial layout and simpler presentation. Version `1.1.0` keeps that foundation, while extending the template with stronger publication showcase and documentation support.
+## Introduction
+
+> **AcaNova-X** represents a fusion of **Academic** rigor and the brilliance of a **Nova**. The suffix **-X** symbolizes the unknown variables in research, the infinite possibilities, and the "X-factor" that makes each academic journey unique.
+
+Born from the need for a balanced academic web presence, **AcaNova-X** aims to be neither too cluttered nor too plain. It keeps the original `1.0.0` spirit of a clean and easy-to-maintain academic homepage, while `1.1.0` extends that foundation with stronger publication showcase, richer previews, and more reusable template defaults.
 
 ## Version Preview
 
 ### Version 1.1.0
 
-<p align="center">
-  <img src="docs/version_1.1.0.gif" alt="AcaNova-X v1.1.0 Preview" width="760">
-</p>
+<details>
+  <summary>Show preview</summary>
+  <p align="center">
+    <img src="docs/version_1.1.0.gif" alt="AcaNova-X v1.1.0 Preview" width="620">
+  </p>
+</details>
 
-Latest version preview with selected publications, expanded publication cards, and updated documentation.
+Latest version preview with selected publications, expanded publication cards, and updated documentation. The GIF is intentionally shown in a smaller, collapsible format to keep the README easier to scan.
 
 ### Version 1.0.0
 
-<p align="center">
-  <img src="docs/version_1.0.0.gif" alt="AcaNova-X v1.0.0 Preview" width="760">
-</p>
+<details>
+  <summary>Show preview</summary>
+  <p align="center">
+    <img src="docs/version_1.0.0.gif" alt="AcaNova-X v1.0.0 Preview" width="620">
+  </p>
+</details>
 
 Original template preview retained for reference, so users can compare the earlier default presentation with the newer release.
 
@@ -53,6 +70,28 @@ The original `1.0.0` version still represents the base spirit of AcaNova-X:
 - JSON-driven content editing for news, honors, and publications
 - Easy deployment for personal academic websites
 - A simpler publication presentation style for users who prefer a minimal starting point
+
+## Core Design Highlights
+
+### 1. Structured Profile and Research Vision
+
+- Highlights a researcher profile, collaboration note, and research directions in a balanced landing page layout
+- Guides visitors from a broad research vision to more concrete thrusts and interests
+
+### 2. Dynamic News with a Human Touch
+
+- Keeps news content lightweight and editable through JSON
+- Preserves the more personal, update-oriented visual tone introduced in the original template
+
+### 3. Publication Showcase
+
+- `1.0.0` focuses on a simpler publication presentation
+- `1.1.0` extends this into selected homepage publications, expanded cards, preview media, and better filtering
+
+### 4. Professional Structure for Academic Use
+
+- Keeps honors, service, education, and contact information organized in a clean academic profile flow
+- Works well as a practical template for personal websites, lab pages, and early-career academic portfolios
 
 ## Version History
 

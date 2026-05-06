@@ -71,27 +71,64 @@ The original `1.0.0` version still represents the base spirit of AcaNova-X:
 - Easy deployment for personal academic websites
 - A simpler publication presentation style for users who prefer a minimal starting point
 
-## Core Design Highlights
+## Detailed Section Walkthrough
 
-### 1. Structured Profile and Research Vision
+### Part 1. Structured Profile and Research Vision
+
+<p align="center">
+  <img src="docs/part1.png" width="100%" alt="Profile and research vision" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);">
+</p>
 
 - Highlights a researcher profile, collaboration note, and research directions in a balanced landing page layout
 - Guides visitors from a broad research vision to more concrete thrusts and interests
+- Preserves one of the most useful ideas from the original template: a homepage that feels complete without becoming crowded
 
-### 2. Dynamic News with a Human Touch
+### Part 2. Dynamic News with a Human Touch
+
+<p align="center">
+  <img src="docs/part2.png" width="100%" alt="News section" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);">
+</p>
 
 - Keeps news content lightweight and editable through JSON
 - Preserves the more personal, update-oriented visual tone introduced in the original template
+- Works well for recent awards, paper acceptances, project launches, and lab updates
 
-### 3. Publication Showcase
+### Part 3. Publication Showcase
 
-- `1.0.0` focuses on a simpler publication presentation
-- `1.1.0` extends this into selected homepage publications, expanded cards, preview media, and better filtering
+#### Version 1.0.0
 
-### 4. Professional Structure for Academic Use
+<p align="center">
+  <img src="docs/part3.png" width="100%" alt="Publication section in version 1.0.0" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);">
+</p>
+
+- `1.0.0` focuses on a simpler publication presentation with a cleaner starting point
+- Suitable for users who want a lighter publication section and prefer to expand features gradually
+
+#### Version 1.1.0
+
+<p align="center">
+  <img src="docs/part3_1.1.0.png" width="100%" alt="Publication section in version 1.1.0" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);">
+</p>
+
+- `1.1.0` upgrades the publication section into a more presentation-oriented showcase
+- Adds selected publications on the homepage, expanded cards, media preview support, and clearer action buttons
+- Makes the difference from `1.0.0` explicit by turning publications into one of the main visual highlights of the template
+
+#### Part 3 Comparison
+
+- `1.0.0`: simpler publication listing and lighter default presentation
+- `1.1.0`: featured homepage papers, expanded publication cards, filterable full list, and `demo.gif` preview fallback
+- This is the most visible functional difference between the two versions
+
+### Part 4. Professional Structure for Academic Use
+
+<p align="center">
+  <img src="docs/part4.png" width="100%" alt="Honors, service, and contact sections" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);">
+</p>
 
 - Keeps honors, service, education, and contact information organized in a clean academic profile flow
 - Works well as a practical template for personal websites, lab pages, and early-career academic portfolios
+- Retains the original goal of being polished enough for public use while staying easy to customize
 
 ## Version History
 

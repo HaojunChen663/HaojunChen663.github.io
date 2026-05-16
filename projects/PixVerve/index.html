@@ -255,12 +255,13 @@
 </section> -->
 
 <style>
-/* 只收紧 Teaser 和 Abstract 这一段的顶部空白 */
+/* 收紧 Teaser 和 Abstract 这一段的顶部空白 */
 .teaser-section {
   padding-top: 1.75rem;
 }
-.abstract-section {
-  padding-top: 4rem;
+/* 让图和 Abstract 间距更舒服 */
+.teaser-image {
+  margin-bottom: 2rem;
 }
 </style>
 
@@ -268,16 +269,12 @@
   <div class="container is-max-desktop">
     <!-- Teaser. -->
     <div class="columns is-centered">
-      <figure class="image">
+      <figure class="image teaser-image">
         <img src="./static/images/teaser.png" alt="PixVerve teaser">
       </figure>
     </div>
     <!--/ Teaser. -->
-  </div>
-</section>
 
-<section class="section abstract-section">
-  <div class="container is-max-desktop">
     <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">

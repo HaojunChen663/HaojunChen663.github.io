@@ -260,7 +260,7 @@
   padding-top: 1.75rem;
 }
 .abstract-section {
-  padding-top: 2rem;
+  padding-top: 4rem;
 }
 </style>
 
@@ -308,13 +308,45 @@
   </div>
 </section>
 
-<section class="section">
+<section class="hero teaser">
+  <div class="container ">
+          <!-- Highlights. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column ">
+        <h2 class="title is-3">Highlights</h2>
+        <div class="content has-text-justified">
+          <p>
+            Compared with existing video editing benchmarks, our proposed <strong>IVEBench</strong> offers the following key advantages:
+          </p>
+          <p style="margin-bottom: 0.2rem;">
+            <strong>(1) Comprehensive support for IVE methods:</strong> IVEBench is specifically designed to evaluate instruction-guided video editing (IVE) models while remaining compatible with traditional source-target prompt-based methods, ensuring broad applicability across editing paradigms;
+          </p>
+          <p style="margin-bottom: 0.2rem;">
+            <strong>(2) Diverse and semantically rich video corpus:</strong> The benchmark contains 600 high-quality source videos spanning <em>seven semantic dimensions</em> and <em>thirty topics</em>, with frame lengths ranging from 32 to 1,024, providing wide coverage of real-world scenarios;
+          </p>
+          <p style="margin-bottom: 0.2rem;">
+            <strong>(3) Comprehensive editing taxonomy:</strong> IVEBench includes <em>eight major editing categories</em> and <em>thirty-five subcategories</em>, encompassing diverse editing types such as style, attribute, subject motion, camera motion, and visual effect editing, to fully represent instruction-guided behaviors;
+          </p>
+          <p style="margin-bottom: 0.2rem;">
+            <strong>(4) Integration of MLLM-based and traditional metrics:</strong> The evaluation protocol combines conventional objective indicators with multimodal large language model (MLLM)-based assessments across <em>three dimensions</em> (video quality, instruction compliance, and video fidelity) for more human-aligned and holistic evaluation;
+          </p>
+          <p style="margin-bottom: 0.2rem;">
+            <strong>(5) Extensive benchmarking of state-of-the-art models:</strong> We conduct a thorough quantitative and qualitative evaluation of leading IVE models—including <em>InsV2V, AnyV2V,</em> <em>StableV2V</em>, as well as the multi-conditional video editing framework <em>VACE</em>, establishing a unified and fair standard for future research.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Highlights. -->
+  </div>
+</section>
+
+<!-- <section class="section">
   <div class="container is-max-desktop">
 
-    <div class="columns is-centered">
+    <div class="columns is-centered"> -->
 
       <!-- Visual Effects. -->
-      <div class="column">
+      <!-- <div class="column">
         <div class="content">
           <h2 class="title is-3">Visual Effects</h2>
           <p>
@@ -326,11 +358,11 @@
                     type="video/mp4">
           </video>
         </div>
-      </div>
+      </div> -->
       <!--/ Visual Effects. -->
 
       <!-- Matting. -->
-      <div class="column">
+      <!-- <div class="column">
         <h2 class="title is-3">Matting</h2>
         <div class="columns is-centered">
           <div class="column content">
@@ -346,16 +378,16 @@
 
         </div>
       </div>
-    </div>
+    </div> -->
     <!--/ Matting. -->
 
     <!-- Animation. -->
-    <div class="columns is-centered">
+    <!-- <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3">Animation</h2>
+        <h2 class="title is-3">Animation</h2> -->
 
         <!-- Interpolating. -->
-        <h3 class="title is-4">Interpolating states</h3>
+        <!-- <h3 class="title is-4">Interpolating states</h3>
         <div class="content has-text-justified">
           <p>
             We can also animate the scene by interpolating the deformation latent codes of two input
@@ -385,11 +417,11 @@
             <p class="is-bold">End Frame</p>
           </div>
         </div>
-        <br/>
+        <br/> -->
         <!--/ Interpolating. -->
 
         <!-- Re-rendering. -->
-        <h3 class="title is-4">Re-rendering the input video</h3>
+        <!-- <h3 class="title is-4">Re-rendering the input video</h3>
         <div class="content has-text-justified">
           <p>
             Using <span class="dnerf">Nerfies</span>, you can re-render a video from a novel
@@ -406,16 +438,16 @@
             <source src="./static/videos/replay.mp4"
                     type="video/mp4">
           </video>
-        </div>
+        </div> -->
         <!--/ Re-rendering. -->
 
-      </div>
-    </div>
+      <!-- </div>
+    </div> -->
     <!--/ Animation. -->
 
 
     <!-- Concurrent Work. -->
-    <div class="columns is-centered">
+    <!-- <div class="columns is-centered">
       <div class="column is-full-width">
         <h2 class="title is-3">Related Links</h2>
 
@@ -438,11 +470,11 @@
           </p>
         </div>
       </div>
-    </div>
+    </div> -->
     <!--/ Concurrent Work. -->
 
-  </div>
-</section>
+  <!-- </div>
+</section> -->
 
 
 <section class="section" id="BibTeX">

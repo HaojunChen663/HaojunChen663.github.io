@@ -417,12 +417,12 @@
       <div class="columns is-centered has-text-centered">
         <div class="column">
           <div class="content has-text-justified">
-            <p style="margin: 10px auto 0 auto; width:75%;">
+            <p style="margin: 15px auto 0 auto; width:75%;">
               Training T2I foundation models at native 100MP poses great challenges due to the immense semantic complexity and vast pixel space. Bridging this gap necessitates a collaborative exploration of diverse architectural and optimization strategies. 
               Based on PixVerve-95K, we conduct a multi-faceted exploration to retrofit T2I foundation models for native 100MP synthesis. <strong>Specifically, we investigate three distinct schemes to identify the optimal path.</strong>
               Please refer to our paper for more details.
             </p>
-            <p style="margin: 25px auto 0 auto; width:60%;">
+            <p style="margin: 35px auto 0 auto; width:60%;">
               <strong>(1) Full-Attention LDM Fine-tuning.</strong> As direct baselines, we perform full-parameter training and use LoRA for parameter-efficient fine-tuning (PEFT) on FLUX.2-klein-base-4B, respectively.
             </p>
             <p style="margin: 10px auto 0 auto; width:60%;">
@@ -446,10 +446,32 @@
   <div class="hero-body is-centered has-text-centered">
     <div class="container">
       <h2 class="title is-3">
-        <strong><span style="color: #BD3F32; font-weight:bold; text-align: center; padding-top: 5.5rem;">Benchmarking Results on PixVerve-Bench and Key Observations</span></strong>
+        <strong><span style="color: #BD3F32; font-weight:bold; text-align: center; padding-top: 5.5rem;">Experimental Results and Key Observations</span></strong>
       </h2>
 
-      
+      <!-- Bench. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <h2 class="title is-4" style="margin-top: 1.25rem;"><strong>Benchmarking Results on PixVerve-Bench</strong></h2>
+          <img src="./static/images/benchmark-results.png" alt="benchmark results" style="max-width: 80%; display: block; margin: 0 auto;">
+          <div class="content has-text-justified">
+            <p style="margin: 15px auto 0 auto; width:60%;"> 
+                <strong>Quantitative comparison on PixVerve-Bench.</strong> <strong>MSFI (Multi-scale Fidelity Index)</strong> and <strong>ICS (Instance-centric Compliance Score)</strong> are our proposed Qwen3.5-based metrics for evaluating the visual quality and semantic alignment of UHR images, respectively. Please refer to our paper for more details. 
+                The best result is highlighted in <strong>bold</strong>, while the second-best result is <u>underlined</u>. -- indicates complete failures such as producing meaningless textures or black images, which are not applicable to the semantics-agnostic GLCM Score and MSFI.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Bench. -->
+
+      <!-- Observations. -->
+      <div class="columns is-centered  has-text-centered">
+        <div class="column">
+          <h2 class="title is-4" style="margin-top: 1.25rem;"><strong>Key Observations and Analysis</strong></h2>
+          
+        </div>
+      </div>
+      <!--/ Observations. -->
 
     </div>
   </div>

@@ -314,17 +314,17 @@
           <strong><span style="color: #BD3F32; font-weight:bold;">Highlights</span></strong>
         </h2>
         <div class="content has-text-justified">
-          <p style="margin-bottom: 0.5rem;">
+          <p style="margin-bottom: 1rem;">
             In this work, we operationalize <strong><em>Native 100MP Text-to-Image Generation</em></strong> as a dedicated training and evaluation regime, significantly distinct from approaches of training-free resolution upscaling.
             To bridge existing multi-faceted gaps, we propose a comprehensive methodology framework spanning <strong><em>dataset, model, and benchmark</em></strong>:
           </p>
-          <p style="margin-bottom: 0.2rem;">
+          <p style="margin-bottom: 0.5rem;">
             <strong>(1)</strong> We introduce <strong>PixVerve-95K</strong>, the first large-scale, high-quality T2I dataset to push image resolution to 100MP. With a five-stage, automated data pipeline, we curate 95,735 100MP images with fine-grained annotations (5 types of metadata and 2 comprehensive captions), directly supporting the training or fine-tuning of T2I models at high resolutions.
           </p>
-          <p style="margin-bottom: 0.2rem;">
+          <p style="margin-bottom: 0.5rem;">
             <strong>(2)</strong> Based on our proposed PixVerve-95K, we first <strong>explore the attempt of generating 100MP images natively</strong>. Specifically, we extend existing T2I foundation models (including both latent diffusion models and pixel diffusion models) with three distinct training schemes, providing valuable insights and paving the way for future breakthroughs.
           </p>
-          <p style="margin-bottom: 0.2rem;">
+          <p style="margin-bottom: 0.5rem;">
             <strong>(3)</strong> To address the limitations of conventional T2I benchmarks, we construct <strong>PixVerve-Bench</strong>, a systematic, hierarchical evaluation protocol incorporating both traditional metrics and assessments based on Multimodal Large Language Models (MLLMs).
           </p>
         </div>
@@ -360,7 +360,7 @@
       </h2>
     
       <!-- Data Pipeline. -->
-      <div class="columns is-centered  has-text-centered">
+      <div class="columns is-centered has-text-centered">
         <div class="column">
           <h2 class="title is-4" style="margin-top: 1.25rem;"><strong>Data Pipeline</strong></h2>
           <img src="./static/images/data-pipeline.png" alt="data pipeline" style="max-width: 80%; display: block; margin: 0 auto;">
@@ -387,7 +387,7 @@
       <!--/ Dataset Statistics. -->
 
       <!-- Dataset Comparison. -->
-      <div class="columns is-centered  has-text-centered">
+      <div class="columns is-centered has-text-centered">
         <div class="column">
           <h2 class="title is-4" style="margin-top: 1.5rem;"><strong>Dataset Comparison</strong></h2>
           <img src="./static/images/dataset-comparison.png" alt="dataset comparison" style="max-width: 86%; display: block; margin: 0 auto;">
@@ -413,8 +413,31 @@
         <strong><span style="color: #BD3F32; font-weight:bold; text-align: center; padding-top: 5.5rem;">Extending T2I Foundation Models to Native 100MP Generation</span></strong>
       </h2>
 
-      
-
+      <!-- Training. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <div class="content has-text-justified">
+            <p style="margin: 10px auto 0 auto; width:75%;">
+              Training T2I foundation models at native 100MP poses great challenges due to the immense semantic complexity and vast pixel space. Bridging this gap necessitates a collaborative exploration of diverse architectural and optimization strategies. 
+              Based on PixVerve-95K, we conduct a multi-faceted exploration to retrofit T2I foundation models for native 100MP synthesis. <strong>Specifically, we investigate three distinct schemes to identify the optimal path.</strong>
+              Please refer to our paper for more details.
+            </p>
+            <p style="margin: 25px auto 0 auto; width:60%;">
+              <strong>(1) Full-Attention LDM Fine-tuning.</strong> As direct baselines, we perform full-parameter training and use LoRA for parameter-efficient fine-tuning (PEFT) on FLUX.2-klein-base-4B, respectively.
+            </p>
+            <p style="margin: 10px auto 0 auto; width:60%;">
+              <strong>(2) Window-Attention Retrofitting and LDM Fine-tuning.</strong> To achieve a balance between performance and computational efficiency, we explore to refine the training strategy by introducing a local-to-global attention mechanism. 
+              We retrofit the joint attention in FLUX.2 into a dual-branch window-attention for both training and inference, without altering the core architecture of full-attention pretrained models.
+            </p>
+            <p style="margin: 10px auto 0 auto; width:60%;">
+              <strong>(3) Patch-based Diffusion in Pixel Space.</strong> Motivated by recent promising pixel diffusion models, we explore a paradigm bypassing the latent space entirely. 
+              Following <a href="https://nju-pcalab.github.io/projects/L2P/">L2P</a>, we adopt a patch-based pixel diffusion framework that decouples global structure from local refinement: a transformer backbone operates on large image patches for long-range semantics and spatial layout, while a lightweight head leverages contextual features and original noisy patches to reconstruct fine details.
+              To enable training on a single GPU card, we further adaptively adjust the patch size to control the token count at higher resolutions.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Training. -->
     </div>
   </div>
 </section>

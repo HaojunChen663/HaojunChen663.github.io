@@ -58,7 +58,7 @@
           }
           </style>
 
-          <h2 class="title is-2 publication-title" style="font-size: 2.8rem;"><span class="gradient-title" style="font-weight:bold;">PixVerve:</span> Advancing Native UHR Image Generation to 100MP with A Large-Scale<br> High-Quality Dataset</h2>
+          <h2 class="title is-2 publication-title" style="font-size: 2.8rem;"><span class="gradient-title" style="font-weight:bold;">PixVerve:</span> Advancing Native UHR Image Generation to 100MP with a Large-Scale<br> High-Quality Dataset</h2>
           
           <style>
           /* 自定义一个介于 is-size-5 和 is-size-6 的字号 */
@@ -419,7 +419,7 @@
           <div class="content has-text-justified">
             <p style="margin: 15px auto 0 auto; width:75%;">
               Training T2I foundation models at native 100MP poses great challenges due to the immense semantic complexity and vast pixel space. Bridging this gap necessitates a collaborative exploration of diverse architectural and optimization strategies. 
-              Based on PixVerve-95K, we conduct a multi-faceted exploration to retrofit T2I foundation models for native 100MP synthesis. <strong>Specifically, we investigate three distinct schemes to identify the optimal path.</strong>
+              Based on PixVerve-95K, we conduct a multi-faceted exploration to retrofit T2I foundation models for native 100MP synthesis. Specifically, we investigate <strong>three distinct schemes</strong> to identify the optimal path.
               Please refer to our paper for more details.
             </p>
             <p style="margin: 35px auto 0 auto; width:60%;">
@@ -467,8 +467,24 @@
       <!-- Observations. -->
       <div class="columns is-centered  has-text-centered">
         <div class="column">
-          <h2 class="title is-4" style="margin-top: 1.25rem;"><strong>Key Observations and Analysis</strong></h2>
+          <h2 class="title is-4" style="margin-top: 1.25rem;"><strong>Main Observations and Analysis</strong></h2>
           
+          <div class="content has-text-justified">
+            <!-- <p style="margin: 15px auto 0 auto; width:75%;">
+              Training T2I foundation models at native 100MP poses great challenges due to the immense semantic complexity and vast pixel space. Bridging this gap necessitates a collaborative exploration of diverse architectural and optimization strategies. 
+              Based on PixVerve-95K, we conduct a multi-faceted exploration to retrofit T2I foundation models for native 100MP synthesis. <strong>Specifically, we investigate three distinct schemes to identify the optimal path.</strong>
+              Please refer to our paper for more details.
+            </p> -->
+            <p style="margin: 35px auto 0 auto; width:60%;">
+              <strong>(1) Full-attention LDM fine-tuning shows strong 4K adaptation but poor scalability.</strong>
+            </p>
+            <p style="margin: 10px auto 0 auto; width:60%;">
+              <strong>(2) Window-attention retrofitting achieves faster attention computation but with optimization challenges.</strong>
+            </p>
+            <p style="margin: 10px auto 0 auto; width:60%;">
+              <strong>(3) Patch-based pixel diffusion presents promising scalability but requires a patch-size trade-off.</strong>
+            </p>
+          </div>
         </div>
       </div>
       <!--/ Observations. -->

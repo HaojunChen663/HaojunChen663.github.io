@@ -476,13 +476,16 @@
               Please refer to our paper for more details.
             </p> -->
             <p style="margin: 35px auto 0 auto; width:60%;">
-              <strong>(1) Full-attention LDM fine-tuning shows strong 4K adaptation but poor scalability.</strong>
+              <strong>(1) Full-attention LDM fine-tuning shows strong 4K adaptation but poor scalability.</strong> Direct fine-tuning effectively adapts local image statistics while preserving the semantic prior at 4K resolution, 
+              but it poses substantial challenges to scale up to 100MP due to the quadratic complexity of attention and requires more training strategies to handle the vast pixel space.
             </p>
             <p style="margin: 10px auto 0 auto; width:60%;">
-              <strong>(2) Window-attention retrofitting achieves faster attention computation but with optimization challenges.</strong>
+              <strong>(2) Window-attention retrofitting achieves faster attention computation but with optimization challenges.</strong> This training scheme reduces computational costs for both training and inference, but it introduces optimization challenges that lead to noticeable performance degradation.
+               In practice, the model requires more optimization steps to recover global communication, and the final quality is sensitive to the window size and aspect-ratio schedules.
             </p>
             <p style="margin: 10px auto 0 auto; width:60%;">
-              <strong>(3) Patch-based pixel diffusion presents promising scalability but requires a patch-size trade-off.</strong>
+              <strong>(3) Patch-based pixel diffusion presents promising scalability but requires a patch-size trade-off.</strong> It is surprisingly observed that this pixel diffusion-based approach shows the most promising scalability among our explored schemes. It remains functional at 8K and 10K, and achieves much faster inference speed on a single GPU card. 
+              But the main limitation is the patch-size trade-off. To fit training into a single 96 GB GPU card, we adjust the patch size from 64 to 128 and 320 at the cost of coarser representations, reducing memory cost but weakening fine-detail reconstruction.
             </p>
           </div>
         </div>

@@ -5,7 +5,7 @@
     "authors": "<strong>Haojun Chen</strong>, Haoyang He, Chengming Xu, Qingdong He, Junwei Zhu, Yabiao Wang, Zhucun Xue, Xianfang Zeng, Zhennan Chen, Xiaobin Hu, Hao Zhao, Yong Liu, Jiangning Zhang, Dacheng Tao",
     "type": "preprint",
     "isFirstAuthor": true,
-    "showOnHomepage": false,
+    "showOnHomepage": true,
     "featuredOrder": 1,
     "venue": "arXiv 2026",
     "year": "2026",

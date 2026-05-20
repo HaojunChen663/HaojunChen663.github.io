@@ -10,7 +10,7 @@
     "venue": "arXiv 2026",
     "year": "2026",
     "highlight": "",
-    "thumbnail": "projects/PixVerve/static/images/teaser.png",
+    "thumbnail": "projects/PixVerve/static/images/data-pipeline.png",
     "tags": [
       { "text": "Paper", "link": "https://arxiv.org/abs/2605.20147" },
       { "text": "Code", "link": "https://github.com/HaojunChen663/PixVerve-95K" },

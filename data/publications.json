@@ -12,8 +12,8 @@
     "highlight": "",
     "thumbnail": "projects/PixVerve/static/images/data-pipeline.png",
     "tags": [
-      { "text": "Paper", "link": "#" },
-      { "text": "Code", "link": "#" },
+      { "text": "Paper", "link": "https://arxiv.org/abs/2605.20147" },
+      { "text": "Code", "link": "https://github.com/HaojunChen663/PixVerve-95K" },
       { "text": "Project Page", "link": "https://haojunchen663.github.io/projects/PixVerve/" }
     ]
   }
